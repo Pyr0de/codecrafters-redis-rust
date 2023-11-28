@@ -1,9 +1,18 @@
-use std::{net::{TcpListener, TcpStream}, io::{Write}};
+use std::net::{TcpStream, TcpListener};
+use std::io::{Write, Read};
 
 fn handle_tcp_stream(mut stream: TcpStream) {
-    let response = "+PONG\r\n";
-    
-    stream.write(&response.as_bytes()).expect("Error writing");
+    loop {
+        let mut buf = [0; 512];
+        match stream.read(&mut buf) {
+            Ok(_size) => {
+                if let Err(_) = stream.write("+PONG\r\n".as_bytes()) {
+                    break;
+                }
+            }
+            _ => {break;}
+        };
+    }
 }
 
 
