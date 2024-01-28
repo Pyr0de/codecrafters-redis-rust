@@ -1,17 +1,28 @@
+mod message;
+
+use message::Message;
 use std::net::{TcpStream, TcpListener};
 use std::io::{Write, Read};
 
-
 fn handle_tcp_stream(mut stream: TcpStream) {
     loop {
-        let mut buf = [0; 512];
+        let mut buf = vec![0;512];
         match stream.read(&mut buf) {
             Ok(_size) => {
-                if let Err(_) = stream.write("+PONG\r\n".as_bytes()) {
-                    break;
+                if let Some(message) = Message::parse_request(String::from_utf8(buf).unwrap_or("\r\n".to_string())) {
+                    println!("{:?}", message);
+
+                    if !message.handle(&mut stream){
+                        println!("error");
+                        break;
+                    } 
+                    
+                }else {
+                    let _ = stream.write(b"\r\n");
                 }
+
             }
-            _ => {break;}
+            _ => break
         };
     }
 }
