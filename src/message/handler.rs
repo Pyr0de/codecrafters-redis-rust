@@ -1,13 +1,27 @@
-use std::{net::TcpStream, io::Write};
+use std::{net::TcpStream, io::Write, sync::{Arc, RwLock}};
+
+use crate::database::Database;
 
 use super::Message;
 
+
 impl Message {
 
-    pub fn handle(self, stream: &mut TcpStream) -> bool {
+    pub fn handle(self, stream: &mut TcpStream, database: &Arc<RwLock<Database>>) -> bool {
         let output_str = match self {
             Self::Ping => "+PONG\r\n".to_string(),
             Self::Echo(s) => format!("${}\r\n{s}\r\n", s.len()),
+            Self::Get(k) => {
+                if let Some(v) = database.read().unwrap().get(&k) {
+                    format!("${}\r\n{v}\r\n", v.len())
+                }else {
+                    "_\r\n".to_string()
+                }
+            },
+            Self::Set(k, v) => {
+                database.write().unwrap().set(k, v);
+                "+OK\r\n".to_string()
+            },
             Self::Unknown(s) => format!("-Unknown command \'{s}\'\r\n"),
         };
         stream.write(output_str.as_bytes()).is_ok()

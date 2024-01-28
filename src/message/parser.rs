@@ -12,6 +12,8 @@ impl Message {
         return Some(match parsed[0].to_lowercase().as_str() {
             "ping" => Self::Ping,
             "echo" => Self::Echo(parsed[1].to_owned()),
+            "get" => Self::Get(parsed[1].to_owned()),
+            "set" => Self::Set(parsed[1].to_owned(), parsed[2].to_owned()),
             _ => Self::Unknown(parsed[0].to_owned())
         })
 

@@ -5,7 +5,9 @@ mod handler;
 pub enum Message {
     Ping,
     Echo(String),
-    Unknown(String)
+    Get(String),
+    Set(String, String),
+    Unknown(String),
 }
 
 
