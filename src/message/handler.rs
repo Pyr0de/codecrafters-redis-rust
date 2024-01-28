@@ -15,7 +15,7 @@ impl Message {
                 if let Some(v) = database.read().unwrap().get(&k) {
                     format!("${}\r\n{v}\r\n", v.len())
                 }else {
-                    "_\r\n".to_string()
+                    "$-1\r\n".to_string()
                 }
             },
             Self::Set(k, v, expiry) => {
