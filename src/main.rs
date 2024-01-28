@@ -35,7 +35,6 @@ async fn main() {
         tokio::spawn(async move {
             match stream {
                 Ok(_stream) => {
-                    println!("accepted new connection");
                     handle_tcp_stream(_stream); 
                 }
                 Err(e) => {
