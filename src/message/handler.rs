@@ -18,8 +18,8 @@ impl Message {
                     "_\r\n".to_string()
                 }
             },
-            Self::Set(k, v) => {
-                database.write().unwrap().set(k, v);
+            Self::Set(k, v, expiry) => {
+                database.write().unwrap().set(k, v, expiry);
                 "+OK\r\n".to_string()
             },
             Self::Unknown(s) => format!("-Unknown command \'{s}\'\r\n"),
