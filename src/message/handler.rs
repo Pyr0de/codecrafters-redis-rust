@@ -22,6 +22,21 @@ impl Message {
                 database.write().unwrap().set(k, v, expiry);
                 "+OK\r\n".to_string()
             },
+            Self::Config(c) => {
+                match c[0].to_lowercase().as_str() {
+                    "get" => {
+                        if let Some(resp) = database.read().unwrap().get_config(&c[1]) {
+                            format!("*2\r\n${}\r\n{}\r\n${}\r\n{}\r\n",c[1].len(), c[1], resp.len(), resp)
+
+                        }else {
+                            "*0\r\n".to_string()
+                        }
+                    },
+                    _ => "$-1\r\n".to_string()
+
+                }
+            },
+
             Self::Unknown(s) => format!("-Unknown command \'{s}\'\r\n"),
         };
         stream.write(output_str.as_bytes()).is_ok()

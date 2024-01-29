@@ -2,6 +2,7 @@ mod message;
 mod database;
 
 use message::Message;
+use std::collections::HashMap;
 use std::net::{TcpStream, TcpListener};
 use std::io::{Write, Read};
 use std::sync::{Arc, RwLock};
@@ -35,8 +36,7 @@ fn handle_tcp_stream(mut stream: TcpStream, database: Arc<RwLock<database::Datab
 #[tokio::main]
 async fn main() {
     let listener = TcpListener::bind("127.0.0.1:6379").unwrap();
-
-    let database = Arc::new(RwLock::new(database::Database::default()));    
+    let database = Arc::new(RwLock::new(database::Database::new(get_args())));    
     for stream in listener.incoming() {
         let clone = database.clone();
         tokio::spawn(async move {
@@ -52,3 +52,30 @@ async fn main() {
         });
     }
 }
+
+pub fn get_args() -> HashMap<String, String>{
+    let mut arguments:HashMap<String, String> = HashMap::new();
+    let args:Vec<String> = std::env::args().collect();
+
+    let mut temp: String = "".to_string();
+    for (k,v) in args.iter().enumerate() {
+        if k == 0 {
+            continue;
+        }
+        if k % 2 == 0 {
+            arguments.insert(temp, v.to_owned());
+            temp = "".to_string();
+        }else {
+            let mut s = v.to_owned();
+            if s.starts_with("--"){
+                s = s[2..].to_string();
+            }
+            temp = s;
+        }
+    }
+
+    arguments
+
+}
+
+

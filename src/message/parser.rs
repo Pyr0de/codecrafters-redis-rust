@@ -30,7 +30,9 @@ impl Message {
 
                 Self::Set(parsed[1].to_owned(), parsed[2].to_owned(), expiry)
             },
-
+            "config" => {
+                Self::Config(parsed[1..].to_vec())
+            },
             _ => Self::Unknown(parsed[0].to_owned())
         })
 

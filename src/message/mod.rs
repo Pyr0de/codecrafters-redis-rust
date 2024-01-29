@@ -9,6 +9,7 @@ pub enum Message {
     Echo(String),
     Get(String),
     Set(String, String, Option<Duration>),
+    Config(Vec<String>),
     Unknown(String),
 }
 

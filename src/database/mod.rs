@@ -3,9 +3,21 @@ use std::{collections::HashMap, time::{Duration, SystemTime}};
 #[derive(Default)]
 pub struct Database {
     db: HashMap<String, (String, Option<SystemTime>)>,
+    config: HashMap<String, String>
 }
 
 impl Database {
+
+    pub fn new(args: HashMap<String, String>) -> Self {
+        Database {
+            db: HashMap::new(),
+            config: args,
+        }
+    }
+    
+    pub fn get_config(&self, k:&String) -> Option<&String> {
+        self.config.get(k)
+    }
 
     pub fn get(&self, k:&String) -> Option<&String> {
         if let Some((v, expiry)) = self.db.get(k){
