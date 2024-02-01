@@ -1,4 +1,3 @@
-use std::time::Duration;
 
 mod parser;
 mod handler;
@@ -8,8 +7,9 @@ pub enum Message {
     Ping,
     Echo(String),
     Get(String),
-    Set(String, String, Option<Duration>),
+    Set(String, String, Option<u128>),
     Config(Vec<String>),
+    Keys(String),
     Unknown(String),
 }
 

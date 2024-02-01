@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::u128;
 
 use super::Message;
 
@@ -16,13 +16,13 @@ impl Message {
             "echo" => Self::Echo(parsed[1].to_owned()),
             "get" => Self::Get(parsed[1].to_owned()),
             "set" => {
-                let mut expiry: Option<Duration> = None;
+                let mut expiry: Option<u128> = None;
 
                 if parsed.get(4).is_some() && parsed.get(3).unwrap() == "px" {
-                    let expiry_ms_res = parsed.get(4).unwrap().parse::<u64>();
+                    let expiry_ms_res = parsed.get(4).unwrap().parse::<u128>();
                     
                     if let Ok(expiry_ms) = expiry_ms_res {
-                        expiry = Some(Duration::from_millis(expiry_ms));
+                        expiry = Some(expiry_ms);
                     }else {
                         return Some(Self::Unknown("invalid time".to_string()))
                     }
@@ -33,6 +33,7 @@ impl Message {
             "config" => {
                 Self::Config(parsed[1..].to_vec())
             },
+            "keys" => Self::Keys(parsed[1].to_owned()),
             _ => Self::Unknown(parsed[0].to_owned())
         })
 

@@ -36,11 +36,19 @@ impl Message {
 
                 }
             },
-
+            Self::Keys(s) => {
+                arr_to_msg(database.read().unwrap().keys(s))
+            },
             Self::Unknown(s) => format!("-Unknown command \'{s}\'\r\n"),
         };
         stream.write(output_str.as_bytes()).is_ok()
     }
 }
 
-
+fn arr_to_msg(arr: Vec<String>) -> String {
+    let mut str = format!("*{}\r\n",arr.len()).to_string();
+    for i in arr {
+        str = str + format!("${}\r\n{i}\r\n", i.len()).as_str();
+    }
+    str
+}
