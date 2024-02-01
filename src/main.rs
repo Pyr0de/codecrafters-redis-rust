@@ -14,7 +14,6 @@ fn handle_tcp_stream(mut stream: TcpStream, database: Arc<RwLock<database::Datab
             Ok(_size) => {
                 let str_buf = String::from_utf8(buf).unwrap_or("\r\n".to_string());
                 if let Some(message) = Message::parse_request(str_buf) {
-                    println!("{:?}", message);
 
                     if !message.handle(&mut stream, &database){
                         println!("error");
@@ -42,7 +41,6 @@ async fn main() {
         tokio::spawn(async move {
             match stream {
                 Ok(stream) => {
-                    
                     handle_tcp_stream(stream, clone); 
                 }
                 Err(e) => {

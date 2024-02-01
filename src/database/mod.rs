@@ -20,8 +20,8 @@ impl Database {
 
             let dbfilename_path = Path::new(dir).join(dbfilename).to_str().unwrap().to_owned();
             
-            if let Some(file_db) = config::read(dbfilename_path) {
-                println!("Setting db");
+            if let Some(file_db) = config::read(&dbfilename_path) {
+                println!("Successfully read file from {dbfilename_path}");
                 db = file_db;
             }
         }
@@ -30,8 +30,6 @@ impl Database {
             db,
             config: args,
         }
-
-
     }
 
     pub fn keys(&self, pat: String) -> Vec<String>{
@@ -42,8 +40,6 @@ impl Database {
             .filter(|(_k,(_v, t))| t.unwrap_or(0 as u128) > current_time_ms() || t.is_none())
             .map(|(k,_v)| k.clone())
             .collect()
-
-       
 
     }
     

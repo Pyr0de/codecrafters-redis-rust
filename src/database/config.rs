@@ -1,8 +1,8 @@
 use std::{io::{SeekFrom, Seek, Read}, fs::File, os::unix::fs::MetadataExt, collections::HashMap, u128};
 
 
-pub fn read(file: String) -> Option<HashMap<String, (String, Option<u128>)>>{
-    let path = std::path::Path::new(&file);
+pub fn read(file: &String) -> Option<HashMap<String, (String, Option<u128>)>>{
+    let path = std::path::Path::new(file);
 
     if let Ok(mut f) = File::open(path){
         let _ = f.seek(SeekFrom::Start(0));
