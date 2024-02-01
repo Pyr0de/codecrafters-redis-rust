@@ -1,21 +1,18 @@
 use std::{io::{SeekFrom, Seek, Read}, fs::File, os::unix::fs::MetadataExt, collections::HashMap, u128};
 
 
-
-
 pub fn read(file: String) -> Option<HashMap<String, (String, Option<u128>)>>{
     let path = std::path::Path::new(&file);
 
-    if !path.is_file() && !file.ends_with(".rdb") {
-        return None;
-    }
-    
-    let mut f = File::open(path).expect("Cannot open file");
-    let _ = f.seek(SeekFrom::Start(0));
-    let mut buf = vec![0; f.metadata().unwrap().size() as usize];
-    f.read_exact(&mut buf).expect("Cannot read file");
+    if let Ok(mut f) = File::open(path){
+        let _ = f.seek(SeekFrom::Start(0));
+        let mut buf = vec![0; f.metadata().unwrap().size() as usize];
+        f.read_exact(&mut buf).expect("Cannot read file");
 
-    Some(parse(buf))
+        return Some(parse(buf))
+    }
+
+    None
 }
 
 fn parse(buf: Vec<u8>) -> HashMap<String, (String, Option<u128>)>{
